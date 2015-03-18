@@ -74,7 +74,7 @@ func OffersHandler(w http.ResponseWriter, r *http.Request) {
 
 	if strings.HasSuffix(r.URL.Path, "display") {
 		log.Println(r.Method, r.URL, http.StatusMovedPermanently)
-		http.Redirect(w, r, "http://127.0.0.1:3000"+DisplayEndpoint, 301)
+		http.Redirect(w, r, "http://"+r.Host+DisplayEndpoint, 301)
 		return
 	}
 
