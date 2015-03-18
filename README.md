@@ -1,4 +1,4 @@
-offers-finder
+offers-finder [![Build Status](https://travis-ci.org/fern4lvarez/offers-finder.svg?branch=master)](https://travis-ci.org/fern4lvarez/offers-finder)
 =============
 
 `offers-finder` is a server of Berlin-based offers. Each offer contains an
