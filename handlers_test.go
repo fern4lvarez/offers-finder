@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 )
 
@@ -133,5 +135,59 @@ func TestTokenHandler(t *testing.T) {
 	}
 	if len(token.Key) != 40 {
 		t.Errorf(errorMessage, "TokenHandler", 40, len(token.Key))
+	}
+}
+
+func TestOffersHandlerOK(t *testing.T) {
+	data := url.Values{}
+	data.Set("token", Token_.Key)
+
+	request, _ := http.NewRequest("POST",
+		"/v1/token",
+		bytes.NewBufferString(data.Encode()))
+	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	response := httptest.NewRecorder()
+
+	OffersHandler(response, request)
+
+	if response.Code != 200 {
+		t.Errorf(errorMessage, "OffersHandlerOK", 200, response.Code)
+	}
+}
+
+func TestOffersHandlerUnauthorized(t *testing.T) {
+	data := url.Values{}
+	data.Set("token", "wrong")
+
+	request, _ := http.NewRequest("POST",
+		"/v1/token",
+		bytes.NewBufferString(data.Encode()))
+	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	response := httptest.NewRecorder()
+
+	OffersHandler(response, request)
+
+	if response.Code != 401 {
+		t.Errorf(errorMessage, "OffersHandlerUnauthorized", 401, response.Code)
+	}
+}
+
+func TestOffersHandlerDisplay(t *testing.T) {
+	data := url.Values{}
+	data.Set("token", Token_.Key)
+
+	request, _ := http.NewRequest("POST",
+		"/v1/token/display",
+		bytes.NewBufferString(data.Encode()))
+	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	response := httptest.NewRecorder()
+
+	OffersHandler(response, request)
+
+	if response.Code != 301 {
+		t.Errorf(errorMessage, "OffersHandlerDisplay", 301, response.Code)
 	}
 }
