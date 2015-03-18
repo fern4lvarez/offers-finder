@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
@@ -14,7 +15,9 @@ var testHandler = func(w http.ResponseWriter, r *http.Request) Handler {
 
 func TestBasicAuth(t *testing.T) {
 	request, _ := http.NewRequest("POST", "/v1/token", nil)
-	request.SetBasicAuth("locafox", "LocaF#xes!")
+
+	os.Setenv("OFFERS_FINDER_PASSWORD", "secret")
+	request.SetBasicAuth("locafox", "secret")
 
 	response := httptest.NewRecorder()
 
@@ -87,11 +90,13 @@ func TestBasicAuthWrongCredentials(t *testing.T) {
 }
 
 func TestValidate(t *testing.T) {
+	os.Setenv("OFFERS_FINDER_PASSWORD", "secret")
+
 	if Validate("a", "b") {
 		t.Errorf(errorMessage, "Validate", false, true)
 	}
 
-	if !Validate("locafox", "LocaF#xes!") {
+	if !Validate("locafox", "secret") {
 		t.Errorf(errorMessage, "Validate", true, false)
 	}
 }

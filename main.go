@@ -3,18 +3,28 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 )
 
-var (
-	token  = NewToken()
-	offers = []Offer{NewOffer(0),
+var Token_ *Token
+var Offers []Offer
+var Username, Password string
+
+func init() {
+	Token_ = NewToken()
+	Offers = []Offer{NewOffer(0),
 		NewOffer(1),
 		NewOffer(2),
 		NewOffer(3),
 		NewOffer(4),
 		NewOffer(5),
 	}
-)
+	Username = "locafox"
+	Password = os.Getenv("OFFERS_FINDER_PASSWORD")
+	if Password == "" {
+		Password = "LocaF#xes!"
+	}
+}
 
 func main() {
 	http.HandleFunc("/", Base(IndexHandler))

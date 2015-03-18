@@ -42,17 +42,17 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.Method, r.URL, http.StatusOK)
-	fmt.Fprintln(w, token)
+	fmt.Fprintln(w, Token_)
 }
 
 func OffersHandler(w http.ResponseWriter, r *http.Request) {
-	if r.FormValue("token") != token.Key {
+	if r.FormValue("token") != Token_.Key {
 		w.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintln(w, JsonResponse{"status": "unauthorized"})
 		return
 	}
 
-	b, err := json.Marshal(offers)
+	b, err := json.Marshal(Offers)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

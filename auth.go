@@ -61,5 +61,5 @@ func BasicAuth(handler Handler) Handler {
 
 // Validate username and password from basic auth
 func Validate(username, password string) bool {
-	return username == "locafox" && password == "LocaF#xes!"
+	return username == Username && password == Password
 }

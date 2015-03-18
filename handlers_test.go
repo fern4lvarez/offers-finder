@@ -23,7 +23,7 @@ func TestBase(t *testing.T) {
 			aclh)
 	}
 
-	if ct := response.Header().Get("Content-Type"); ct != "*" {
+	if ct := response.Header().Get("Content-Type"); ct != "application/json" {
 		t.Errorf(errorMessage, "Base", "application/json", ct)
 	}
 }
