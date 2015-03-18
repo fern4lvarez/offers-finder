@@ -6,8 +6,13 @@ import (
 	"os"
 )
 
+// Token_ is a unique 40 characters token
 var Token_ *Token
+
+// Offers is a random list of offers based in Berlin
 var Offers []Offer
+
+// Username and Password are the server's Basic Auth credentials
 var Username, Password string
 
 func init() {

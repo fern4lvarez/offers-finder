@@ -29,6 +29,7 @@ func (token Token) Encode() (b []byte, err error) {
 	return
 }
 
+// String formats the output of a Token
 func (token Token) String() string {
 	b, err := token.Encode()
 	if err != nil {

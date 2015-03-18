@@ -7,8 +7,10 @@ import (
 	"net/http"
 )
 
+// Handler acts as a type of a basic handler
 type Handler func(w http.ResponseWriter, r *http.Request)
 
+// Base wrapper that sets basic headers
 func Base(handler Handler) Handler {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -19,6 +21,7 @@ func Base(handler Handler) Handler {
 	}
 }
 
+// Post wrapper only accepts POST requests
 func Post(handler Handler) Handler {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Only POST requests are authorized
@@ -30,6 +33,7 @@ func Post(handler Handler) Handler {
 	}
 }
 
+// IndexHandler handles GET requests to the roor directory
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" || r.Method != "GET" {
 		log.Println(r.Method, r.URL, http.StatusNotFound)
@@ -40,11 +44,14 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, JsonResponse{"status": "OK"})
 }
 
+// TokenHandler handles token requests
 func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.Method, r.URL, http.StatusOK)
 	fmt.Fprintln(w, Token_)
 }
 
+// OffersHanlder handles offers requests, only accepts requests
+// with the right payload
 func OffersHandler(w http.ResponseWriter, r *http.Request) {
 	if r.FormValue("token") != Token_.Key {
 		w.WriteHeader(http.StatusUnauthorized)
