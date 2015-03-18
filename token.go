@@ -29,6 +29,15 @@ func (token Token) Encode() (b []byte, err error) {
 	return
 }
 
+func (token Token) String() string {
+	b, err := token.Encode()
+	if err != nil {
+		return ""
+	}
+
+	return string(b)
+}
+
 // generateToken out of characters with a given size
 func generateToken(size int) string {
 	if size <= 0 {

@@ -6,26 +6,82 @@ import (
 	"testing"
 )
 
-func TestNotFoundHandler(t *testing.T) {
-	request, _ := http.NewRequest("GET", "/", nil)
+func TestBase(t *testing.T) {
+	request, _ := http.NewRequest("POST", "/v1/token", nil)
 	response := httptest.NewRecorder()
 
-	NotFoundHandler(response, request)
+	Base(testHandler(response, request))(response, request)
 
-	if response.Code != 404 {
-		t.Errorf(errorMessage, "NotFoundHandler", 404, response.Code)
+	if aclo := response.Header().Get("Access-Control-Allow-Origin"); aclo != "*" {
+		t.Errorf(errorMessage, "Base", "*", aclo)
 	}
 
-	request, _ = http.NewRequest("GET", "/v1/token", nil)
-	response = httptest.NewRecorder()
+	if aclh := response.Header().Get("Access-Control-Allow-Headers"); aclh !=
+		"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization" {
+		t.Errorf(errorMessage, "Base",
+			"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization",
+			aclh)
+	}
 
-	NotFoundHandler(response, request)
-
-	if response.Code != 404 {
-		t.Errorf(errorMessage, "NotFoundHandler", 404, response.Code)
+	if ct := response.Header().Get("Content-Type"); ct != "*" {
+		t.Errorf(errorMessage, "Base", "application/json", ct)
 	}
 }
 
+func TestPostOK(t *testing.T) {
+	request, _ := http.NewRequest("POST", "/v1/token", nil)
+	response := httptest.NewRecorder()
+
+	Post(testHandler(response, request))(response, request)
+
+	if response.Code != 200 {
+		t.Errorf(errorMessage, "PostOK", 200, response.Code)
+	}
+}
+
+func TestPostNotFound(t *testing.T) {
+	request, _ := http.NewRequest("GET", "/v1/token", nil)
+	response := httptest.NewRecorder()
+
+	Post(testHandler(response, request))(response, request)
+
+	if response.Code != 404 {
+		t.Errorf(errorMessage, "PostUnauthorized", 404, response.Code)
+	}
+}
+
+func TestIndexHandlerOK(t *testing.T) {
+	request, _ := http.NewRequest("GET", "/", nil)
+	response := httptest.NewRecorder()
+
+	IndexHandler(response, request)
+
+	if response.Code != 200 {
+		t.Errorf(errorMessage, "IndexHandlerOK", 200, response.Code)
+	}
+}
+
+func TestIndexHandlerNotFound(t *testing.T) {
+	request, _ := http.NewRequest("GET", "/foo", nil)
+	response := httptest.NewRecorder()
+
+	IndexHandler(response, request)
+
+	if response.Code != 404 {
+		t.Errorf(errorMessage, "IndexHandlerNotFound", 404, response.Code)
+	}
+}
+
+func TestIndexHandlerPost(t *testing.T) {
+	request, _ := http.NewRequest("POST", "/", nil)
+	response := httptest.NewRecorder()
+
+	IndexHandler(response, request)
+
+	if response.Code != 404 {
+		t.Errorf(errorMessage, "IndexHandlerPost", 404, response.Code)
+	}
+}
 func TestTokenHandler(t *testing.T) {
 	var token Token
 

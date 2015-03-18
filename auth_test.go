@@ -6,14 +6,14 @@ import (
 	"testing"
 )
 
-var testHandler = func(w http.ResponseWriter, r *http.Request) handler {
+var testHandler = func(w http.ResponseWriter, r *http.Request) Handler {
 	return func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
 
 func TestBasicAuth(t *testing.T) {
-	request, _ := http.NewRequest("POST", "/v1/vendor", nil)
+	request, _ := http.NewRequest("POST", "/v1/token", nil)
 	request.SetBasicAuth("locafox", "LocaF#xes!")
 
 	response := httptest.NewRecorder()
@@ -26,7 +26,7 @@ func TestBasicAuth(t *testing.T) {
 }
 
 func TestBasicAuthWrongMethod(t *testing.T) {
-	request, _ := http.NewRequest("GET", "/v1/vendor", nil)
+	request, _ := http.NewRequest("GET", "/v1/token", nil)
 	response := httptest.NewRecorder()
 
 	BasicAuth(testHandler(response, request))(response, request)
@@ -37,7 +37,7 @@ func TestBasicAuthWrongMethod(t *testing.T) {
 }
 
 func TestBasicAuthNoAuthHeader(t *testing.T) {
-	request, _ := http.NewRequest("POST", "/v1/vendor", nil)
+	request, _ := http.NewRequest("POST", "/v1/token", nil)
 	response := httptest.NewRecorder()
 
 	BasicAuth(testHandler(response, request))(response, request)
@@ -48,7 +48,7 @@ func TestBasicAuthNoAuthHeader(t *testing.T) {
 }
 
 func TestBasicAuthWrongAuthHeader(t *testing.T) {
-	request, _ := http.NewRequest("POST", "/v1/vendor", nil)
+	request, _ := http.NewRequest("POST", "/v1/token", nil)
 	request.Header.Add("Authorization", "a")
 
 	response := httptest.NewRecorder()
@@ -61,7 +61,7 @@ func TestBasicAuthWrongAuthHeader(t *testing.T) {
 }
 
 func TestBasicAuthWrongPayload(t *testing.T) {
-	request, _ := http.NewRequest("POST", "/v1/vendor", nil)
+	request, _ := http.NewRequest("POST", "/v1/token", nil)
 	request.Header.Add("Authorization", "Basic a")
 
 	response := httptest.NewRecorder()
@@ -74,7 +74,7 @@ func TestBasicAuthWrongPayload(t *testing.T) {
 }
 
 func TestBasicAuthWrongCredentials(t *testing.T) {
-	request, _ := http.NewRequest("POST", "/v1/vendor", nil)
+	request, _ := http.NewRequest("POST", "/v1/token", nil)
 	request.SetBasicAuth("a", "a")
 
 	response := httptest.NewRecorder()

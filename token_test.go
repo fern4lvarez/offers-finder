@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 )
 
@@ -12,7 +13,7 @@ func TestNewToken(t *testing.T) {
 	}
 }
 
-func TestDecode(t *testing.T) {
+func TestTokenDecode(t *testing.T) {
 	b := []byte(`{"token":"abcdefghijklmnopqrstuvxyz"}`)
 	expectedToken := Token{
 		Key: "abcdefghijklmnopqrstuvxyz",
@@ -22,14 +23,14 @@ func TestDecode(t *testing.T) {
 	err := token.Decode(b)
 
 	if err != nil {
-		t.Errorf(errorMessage, "Decode", nil, err)
+		t.Errorf(errorMessage, "TokenDecode", nil, err)
 	}
 	if token.Key != "abcdefghijklmnopqrstuvxyz" {
-		t.Errorf(errorMessage, "Decode", token, expectedToken.Key)
+		t.Errorf(errorMessage, "TokenDecode", token, expectedToken.Key)
 	}
 }
 
-func TestEncode(t *testing.T) {
+func TestTokenEncode(t *testing.T) {
 	token := Token{
 		Key: "abcdefghijklmnopqrstuvxyz",
 	}
@@ -38,11 +39,19 @@ func TestEncode(t *testing.T) {
 	b, err := token.Encode()
 
 	if err != nil {
-		t.Errorf(errorMessage, "Encode", nil, err)
+		t.Errorf(errorMessage, "TokenEncode", nil, err)
 	}
 	if bytes.Compare(b, expectedEncoded) != 0 {
-		t.Errorf(errorMessage, "Encode", b, expectedEncoded)
+		t.Errorf(errorMessage, "TokenEncode", string(b), string(expectedEncoded))
 	}
+}
+
+func ExampleTokenString() {
+	token := Token{
+		Key: "abcdefghijklmnopqrstuvxyz",
+	}
+	fmt.Println(token)
+	// Output: {"token":"abcdefghijklmnopqrstuvxyz"}
 }
 
 func TestGenerateToken(t *testing.T) {
