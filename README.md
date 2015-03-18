@@ -7,6 +7,9 @@ id, and latitude and longitude coordinates, so they can be located in the map.
 `offers-finder` is a HTTP application written entirely in Go, using its standard
 library only, as a showcase of its strength and flexibility.
 
+> Note: all sensitive data shown in this document, i.e. usernames, passwords
+  or tokens are fake data, and you need to replace them accordingly.
+
 Getting Started
 ---------------
 
@@ -90,7 +93,11 @@ Specification
 	[{"id":0,"lat":52.512498900043845,"long":13.303739745914536},{"id":1,"lat":52.51202029761004,"long":13.350967639139323},{"id":2,"lat":52.52210593055171,"long":13.44626918440136},{"id":3,"lat":52.54331296047837,"long":13.46356050111962},{"id":4,"lat":52.509743468901824,"long":13.430912335328042},{"id":5,"lat":52.524105958211635,"long":13.295507420281938}]
 	~~~
 
-* Unauthenticated `POST` request to `/v1/token` and /v1/offers returns `401`:
+* Authenticated `POST` request with the token (as a form parameter) to `/v1/offers/display`
+  returns `301`, redirecting to the a unique URL that will display a map with the offers.
+  See [Displaying the map](#displaying-the-map).
+
+* Unauthenticated `POST` request to `/v1/token`, `/v1/offers` and `/v1/offers/display` returns `401`:
 
 	```
 	⇒ curl -i -X POST -u "wrong:wrong" http://127.0.0.1:3000/v1/token 
@@ -116,6 +123,38 @@ Specification
 
 	404 page not found
 ```
+
+Displaying the map
+------------------
+
+The map of the offers is served by an unique and secret endpoint. In order to get this endpoint,
+you need to make an authenticated `POST` request against `/v1/offers/display` endpoint:
+
+```
+⇒ curl -i -X POST -u "user:secret" http://127.0.0.1:3000/v1/offers/display\?token\=NFaQ0IJUcmn75QUXfem2rkaCZkOG8MXqm0cIgFNA
+HTTP/1.1 301 Moved Permanently
+Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+Location: http://127.0.0.1:3000/iICFqfLyqsU9PbbI
+Date: Wed, 18 Mar 2015 22:32:36 GMT
+Content-Length: 0
+```
+
+The `Location` response Header contains the unique URL that will display the map in the web browser.
+Please note that for security reasons it's not possible to get this URL without making first the
+authenticated request.
+
+In order to make this process simpler, you can directly open this URL in your web browser by taking
+this shortcut in your terminal:
+
+```bash
+# Linux users
+xdg-open `curl -Ls -o /dev/null -X POST -w %{url_effective} -u "user:secret" http://127.0.0.1:3000/v1/offers/display\?token\=NFaQ0IJUcmn75QUXfem2rkaCZkOG8MXqm0cIgFNA`
+
+# OSX users
+open `curl -Ls -o /dev/null -X POST -w %{url_effective} -u "user:secret" http://127.0.0.1:3000/v1/offers/display\?token\=NFaQ0IJUcmn75QUXfem2rkaCZkOG8MXqm0cIgFNA`
+``` 
 
 Development
 -----------
