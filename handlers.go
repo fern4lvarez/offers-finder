@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 )
 
 // Handler acts as a type of a basic handler
@@ -33,9 +34,21 @@ func Post(handler Handler) Handler {
 	}
 }
 
-// IndexHandler handles GET requests to the roor directory
+// IndexHandler handles GET requests to the root url
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" || r.Method != "GET" {
+		log.Println(r.Method, r.URL, http.StatusNotFound)
+		http.NotFound(w, r)
+		return
+	}
+	log.Println(r.Method, r.URL, http.StatusOK)
+	fmt.Fprintln(w, JsonResponse{"status": "OK"})
+}
+
+// DisplayHandler handles GET requests to the display map
+// secret endpoint
+func DisplayHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != DisplayEndpoint || r.Method != "GET" {
 		log.Println(r.Method, r.URL, http.StatusNotFound)
 		http.NotFound(w, r)
 		return
@@ -59,13 +72,19 @@ func OffersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if strings.HasSuffix(r.URL.Path, "display") {
+		log.Println(r.Method, r.URL, http.StatusMovedPermanently)
+		http.Redirect(w, r, "http://127.0.0.1:3000"+DisplayEndpoint, 301)
+		return
+	}
+
+	log.Println(r.Method, r.URL, http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
 	b, err := json.Marshal(Offers)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	log.Println(r.Method, r.URL, http.StatusOK)
 	fmt.Fprintln(w, string(b))
 }

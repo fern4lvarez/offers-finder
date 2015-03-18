@@ -82,6 +82,40 @@ func TestIndexHandlerPost(t *testing.T) {
 		t.Errorf(errorMessage, "IndexHandlerPost", 404, response.Code)
 	}
 }
+
+func TestDisplayHandlerOK(t *testing.T) {
+	request, _ := http.NewRequest("GET", DisplayEndpoint, nil)
+	response := httptest.NewRecorder()
+
+	DisplayHandler(response, request)
+
+	if response.Code != 200 {
+		t.Errorf(errorMessage, "DisplayHandlerOK", 200, response.Code)
+	}
+}
+
+func TestDisplayHandlerNotFound(t *testing.T) {
+	request, _ := http.NewRequest("GET", "/foo", nil)
+	response := httptest.NewRecorder()
+
+	DisplayHandler(response, request)
+
+	if response.Code != 404 {
+		t.Errorf(errorMessage, "DisplayHandlerNotFound", 404, response.Code)
+	}
+}
+
+func TestDisplayHandlerPost(t *testing.T) {
+	request, _ := http.NewRequest("POST", DisplayEndpoint, nil)
+	response := httptest.NewRecorder()
+
+	DisplayHandler(response, request)
+
+	if response.Code != 404 {
+		t.Errorf(errorMessage, "DisplayHandlerPost", 404, response.Code)
+	}
+}
+
 func TestTokenHandler(t *testing.T) {
 	var token Token
 

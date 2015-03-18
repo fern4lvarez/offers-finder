@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +15,10 @@ var Offers []Offer
 
 // Username and Password are the server's Basic Auth credentials
 var Username, Password string
+
+// DisplayEndpoint is a unique key that is used as a secret
+// endpoint to the display of the offers map
+var DisplayEndpoint string
 
 func init() {
 	Token_ = NewToken()
@@ -29,12 +34,16 @@ func init() {
 	if Password == "" {
 		Password = "LocaF#xes!"
 	}
+
+	DisplayEndpoint = fmt.Sprintf("/v1/%s", generateToken(8))
 }
 
 func main() {
 	http.HandleFunc("/", Base(IndexHandler))
+	http.HandleFunc(DisplayEndpoint, Base(DisplayHandler))
 	http.HandleFunc("/v1/token", Base(Post(BasicAuth(TokenHandler))))
 	http.HandleFunc("/v1/offers", Base(Post(BasicAuth(OffersHandler))))
+	http.HandleFunc("/v1/offers/display", Base(Post(BasicAuth(OffersHandler))))
 
 	log.Println("Listening and serving HTTP on :3000")
 	log.Fatal(http.ListenAndServe(":3000", nil))
