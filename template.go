@@ -4,6 +4,8 @@ import (
 	"net/http"
 )
 
+// RenderMapTemplate renders the map.html template
+// with existing Offers
 func RenderMapTemplate(w http.ResponseWriter) {
 	data := struct {
 		Offers []Offer

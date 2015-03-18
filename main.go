@@ -39,7 +39,7 @@ func init() {
 		Password = "LocaF#xes!"
 	}
 
-	DisplayEndpoint = fmt.Sprintf("/v1/%s", generateToken(8))
+	DisplayEndpoint = fmt.Sprintf("/%s", generateToken(16))
 
 	MapTemplate = template.Must(template.ParseFiles("templates/map.html"))
 }
