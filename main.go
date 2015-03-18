@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -20,6 +21,9 @@ var Username, Password string
 // endpoint to the display of the offers map
 var DisplayEndpoint string
 
+// MapTemplate of the offers finder map
+var MapTemplate *template.Template
+
 func init() {
 	Token_ = NewToken()
 	Offers = []Offer{NewOffer(0),
@@ -36,11 +40,13 @@ func init() {
 	}
 
 	DisplayEndpoint = fmt.Sprintf("/v1/%s", generateToken(8))
+
+	MapTemplate = template.Must(template.ParseFiles("templates/map.html"))
 }
 
 func main() {
 	http.HandleFunc("/", Base(IndexHandler))
-	http.HandleFunc(DisplayEndpoint, Base(DisplayHandler))
+	http.HandleFunc(DisplayEndpoint, DisplayHandler)
 	http.HandleFunc("/v1/token", Base(Post(BasicAuth(TokenHandler))))
 	http.HandleFunc("/v1/offers", Base(Post(BasicAuth(OffersHandler))))
 	http.HandleFunc("/v1/offers/display", Base(Post(BasicAuth(OffersHandler))))

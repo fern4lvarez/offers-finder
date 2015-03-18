@@ -107,17 +107,6 @@ func TestDisplayHandlerNotFound(t *testing.T) {
 	}
 }
 
-func TestDisplayHandlerPost(t *testing.T) {
-	request, _ := http.NewRequest("POST", DisplayEndpoint, nil)
-	response := httptest.NewRecorder()
-
-	DisplayHandler(response, request)
-
-	if response.Code != 404 {
-		t.Errorf(errorMessage, "DisplayHandlerPost", 404, response.Code)
-	}
-}
-
 func TestTokenHandler(t *testing.T) {
 	var token Token
 

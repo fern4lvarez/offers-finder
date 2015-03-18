@@ -48,13 +48,13 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 // DisplayHandler handles GET requests to the display map
 // secret endpoint
 func DisplayHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != DisplayEndpoint || r.Method != "GET" {
+	if r.URL.Path != DisplayEndpoint {
 		log.Println(r.Method, r.URL, http.StatusNotFound)
 		http.NotFound(w, r)
 		return
 	}
 	log.Println(r.Method, r.URL, http.StatusOK)
-	fmt.Fprintln(w, JsonResponse{"status": "OK"})
+	RenderMapTemplate(w)
 }
 
 // TokenHandler handles token requests
