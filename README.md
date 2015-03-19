@@ -69,7 +69,7 @@ Specification
 	```
 
 * Authenticated `POST` request with the token (as a form parameter) to `/v1/offers`
-  returns `200` and randomly and random list of Berlin offers in the format:
+  returns `200` and a random list of Berlin offers in the format:
 
     ```js
     [
