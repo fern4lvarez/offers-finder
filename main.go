@@ -33,10 +33,10 @@ func init() {
 		NewOffer(4),
 		NewOffer(5),
 	}
-	Username = "locafox"
+	Username = "user"
 	Password = os.Getenv("OFFERS_FINDER_PASSWORD")
 	if Password == "" {
-		Password = "LocaF#xes!"
+		Password = "secret"
 	}
 
 	DisplayEndpoint = fmt.Sprintf("/%s", generateToken(16))
