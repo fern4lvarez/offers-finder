@@ -15,7 +15,7 @@ var testHandler = func(w http.ResponseWriter, r *http.Request) Handler {
 func TestBasicAuth(t *testing.T) {
 	request, _ := http.NewRequest("POST", "/v1/token", nil)
 
-	request.SetBasicAuth("locafox", "LocaF#xes!")
+    request.SetBasicAuth("user", "secret")
 
 	response := httptest.NewRecorder()
 
@@ -92,7 +92,7 @@ func TestValidate(t *testing.T) {
 		t.Errorf(errorMessage, "Validate", false, true)
 	}
 
-	if !Validate("locafox", "LocaF#xes!") {
+    if !Validate("user", "secret") {
 		t.Errorf(errorMessage, "Validate", true, false)
 	}
 }
